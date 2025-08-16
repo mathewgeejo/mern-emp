@@ -20,20 +20,30 @@ import {
   ToggleButtonGroup,
   Fade,
   Zoom,
+  IconButton,
+  Tooltip,
+  Divider,
 } from '@mui/material';
 import {
-  Person as PersonIcon,
   Email as EmailIcon,
   ViewList as ViewListIcon,
   ViewModule as ViewModuleIcon,
   TableChart as TableChartIcon,
+  Delete as DeleteIcon,
+  Work as WorkIcon,
+  LocationOn as LocationIcon,
+  AttachMoney as MoneyIcon,
+  Star as StarIcon,
 } from '@mui/icons-material';
 import axios from 'axios';
 
-const Dashboard = () => {
-  const [employees, setEmployees] = useState([]);
+const Dashboard = ({ customEmployees = [], deleteEmployee }) => {
+  const [apiEmployees, setApiEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('cards'); // 'cards', 'list', 'table'
+
+  // Combine API employees and custom employees
+  const allEmployees = [...apiEmployees, ...customEmployees];
 
   useEffect(() => {
     fetchEmployees();
@@ -43,7 +53,7 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const response = await axios.get('https://jsonplaceholder.typicode.com/users');
-      setEmployees(response.data);
+      setApiEmployees(response.data);
     } catch (error) {
       console.error('Error fetching employees:', error);
     } finally {
@@ -74,8 +84,197 @@ const Dashboard = () => {
   };
 
   const renderCardView = () => (
-    <Grid container spacing={3}>
-      {employees.map((employee, index) => (
+    <Box>
+      {/* Custom Employees Section */}
+      {customEmployees.length > 0 && (
+        <Box sx={{ mb: 5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+            <StarIcon sx={{ color: '#f59e0b', mr: 1, fontSize: '1.5rem' }} />
+            <Typography 
+              variant="h5" 
+              sx={{ 
+                color: 'white', 
+                fontWeight: 700,
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              Your Custom Employees ({customEmployees.length})
+            </Typography>
+          </Box>
+          <Grid container spacing={3}>
+            {customEmployees.map((employee, index) => (
+              <Grid item xs={12} sm={6} md={4} key={employee.id}>
+                <Zoom in={true} style={{ transitionDelay: `${index * 100}ms` }}>
+                  <Card
+                    className="hover-lift professional-card"
+                    sx={{
+                      borderRadius: 5,
+                      background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%)',
+                      backdropFilter: 'blur(20px)',
+                      border: '2px solid rgba(245, 158, 11, 0.3)',
+                      boxShadow: '0 8px 32px rgba(245, 158, 11, 0.2)',
+                      transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: '4px',
+                        background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                        opacity: 1
+                      },
+                      '&:hover': {
+                        transform: 'translateY(-12px) scale(1.02)',
+                        boxShadow: '0 25px 50px rgba(245, 158, 11, 0.3)',
+                      }
+                    }}
+                  >
+                    <CardContent sx={{ p: 3 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Avatar
+                            sx={{
+                              width: 64,
+                              height: 64,
+                              background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                              fontSize: '1.5rem',
+                              fontWeight: 700,
+                              mr: 2.5,
+                              boxShadow: '0 8px 25px rgba(245, 158, 11, 0.4)',
+                              border: '3px solid rgba(255, 255, 255, 0.9)'
+                            }}
+                          >
+                            {employee.name.charAt(0)}
+                          </Avatar>
+                          <Box>
+                            <Typography 
+                              variant="h6" 
+                              sx={{ 
+                                fontWeight: 700, 
+                                color: '#1e293b',
+                                mb: 0.5,
+                                fontSize: '1.25rem'
+                              }}
+                            >
+                              {employee.name}
+                            </Typography>
+                            <Chip
+                              label="Custom"
+                              size="small"
+                              sx={{
+                                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                                color: 'white',
+                                fontWeight: 600,
+                                fontSize: '0.75rem',
+                                '& .MuiChip-label': {
+                                  px: 1.5
+                                }
+                              }}
+                            />
+                          </Box>
+                        </Box>
+                        <Tooltip title="Delete Employee">
+                          <IconButton
+                            onClick={() => deleteEmployee(employee.id)}
+                            sx={{
+                              color: '#dc2626',
+                              '&:hover': {
+                                backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                                transform: 'scale(1.1)'
+                              }
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                      
+                      <Box sx={{ display: 'flex', alignItems: 'center', mt: 2, mb: 1 }}>
+                        <EmailIcon sx={{ color: '#2563eb', mr: 1.5, fontSize: '1.1rem' }} />
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#64748b',
+                            fontWeight: 500,
+                            fontSize: '0.9rem'
+                          }}
+                        >
+                          {employee.email}
+                        </Typography>
+                      </Box>
+
+                      <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mb: 1 }}>
+                        <WorkIcon sx={{ color: '#7c3aed', mr: 1.5, fontSize: '1.1rem' }} />
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#64748b',
+                            fontWeight: 500,
+                            fontSize: '0.9rem'
+                          }}
+                        >
+                          {employee.designation}
+                        </Typography>
+                      </Box>
+
+                      <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mb: 1 }}>
+                        <LocationIcon sx={{ color: '#059669', mr: 1.5, fontSize: '1.1rem' }} />
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#64748b',
+                            fontWeight: 500,
+                            fontSize: '0.9rem'
+                          }}
+                        >
+                          {employee.location}
+                        </Typography>
+                      </Box>
+
+                      <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                        <MoneyIcon sx={{ color: '#d97706', mr: 1.5, fontSize: '1.1rem' }} />
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#64748b',
+                            fontWeight: 600,
+                            fontSize: '0.9rem'
+                          }}
+                        >
+                          ${parseInt(employee.salary).toLocaleString()}
+                        </Typography>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Zoom>
+              </Grid>
+            ))}
+          </Grid>
+          <Divider sx={{ my: 4, borderColor: 'rgba(255, 255, 255, 0.2)' }} />
+        </Box>
+      )}
+
+      {/* API Employees Section */}
+      <Box sx={{ mb: 3 }}>
+        <Typography 
+          variant="h5" 
+          sx={{ 
+            color: 'rgba(255, 255, 255, 0.9)', 
+            fontWeight: 600,
+            mb: 3
+          }}
+        >
+          Team Members from API ({apiEmployees.length})
+        </Typography>
+      </Box>
+      <Grid container spacing={3}>
+        {apiEmployees.map((employee, index) => (
         <Grid item xs={12} sm={6} md={4} key={employee.id}>
           <Zoom in={true} style={{ transitionDelay: `${index * 100}ms` }}>
             <Card
@@ -346,14 +545,32 @@ const Dashboard = () => {
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
           <Box sx={{ textAlign: 'center' }}>
             <CircularProgress 
-              size={60} 
+              size={80} 
+              thickness={4}
               sx={{ 
-                color: '#667eea',
-                mb: 2
+                color: '#2563eb',
+                mb: 3,
+                '& .MuiCircularProgress-circle': {
+                  strokeLinecap: 'round',
+                }
               }} 
             />
-            <Typography variant="h6" sx={{ color: 'white', fontWeight: 500 }}>
+            <Typography variant="h5" sx={{ 
+              color: 'white', 
+              fontWeight: 600,
+              background: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}>
               Loading employees...
+            </Typography>
+            <Typography variant="body2" sx={{ 
+              color: 'rgba(255, 255, 255, 0.7)', 
+              mt: 1,
+              fontSize: '1rem'
+            }}>
+              Please wait while we fetch the latest data
             </Typography>
           </Box>
         </Box>
@@ -365,17 +582,18 @@ const Dashboard = () => {
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Fade in={true}>
         <Box>
-          <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Box sx={{ textAlign: 'center', mb: 5 }}>
             <Typography 
-              variant="h3" 
+              variant="h2" 
               sx={{ 
-                fontWeight: 700,
-                background: 'linear-gradient(45deg, #fff 30%, #f0f8ff 90%)',
+                fontWeight: 800,
+                background: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
-                mb: 2
+                mb: 2,
+                letterSpacing: '-0.025em'
               }}
             >
               Employee Dashboard
@@ -383,12 +601,16 @@ const Dashboard = () => {
             <Typography 
               variant="h6" 
               sx={{ 
-                color: 'rgba(255, 255, 255, 0.9)',
+                color: 'rgba(255, 255, 255, 0.85)',
                 fontWeight: 400,
-                mb: 3
+                mb: 4,
+                fontSize: '1.2rem',
+                maxWidth: '600px',
+                mx: 'auto',
+                lineHeight: 1.6
               }}
             >
-              Manage and view all employees in your organization
+              Manage and view all employees in your organization with our modern, intuitive interface
             </Typography>
             
             <ToggleButtonGroup
@@ -396,15 +618,26 @@ const Dashboard = () => {
               exclusive
               onChange={handleViewChange}
               sx={{
+                background: 'rgba(255, 255, 255, 0.1)',
+                backdropFilter: 'blur(20px)',
+                borderRadius: 4,
+                border: '1px solid rgba(255, 255, 255, 0.2)',
                 '& .MuiToggleButton-root': {
-                  color: 'white',
-                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  border: 'none',
+                  borderRadius: 3,
+                  px: 3,
+                  py: 1.5,
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  fontSize: '0.95rem',
                   '&.Mui-selected': {
-                    background: 'rgba(255, 255, 255, 0.2)',
+                    background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
                     color: 'white',
+                    boxShadow: '0 8px 25px rgba(37, 99, 235, 0.4)',
                   },
                   '&:hover': {
-                    background: 'rgba(255, 255, 255, 0.1)',
+                    background: 'rgba(255, 255, 255, 0.15)',
                   }
                 }
               }}

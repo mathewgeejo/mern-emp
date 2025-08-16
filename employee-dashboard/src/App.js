@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -114,6 +114,45 @@ const theme = createTheme({
 });
 
 function App() {
+  // State to store custom employees added through the form
+  const [customEmployees, setCustomEmployees] = useState([]);
+
+  // Load employees from localStorage on app start
+  useEffect(() => {
+    const savedEmployees = localStorage.getItem('customEmployees');
+    if (savedEmployees) {
+      setCustomEmployees(JSON.parse(savedEmployees));
+    }
+  }, []);
+
+  // Function to add new employee
+  const addEmployee = (employeeData) => {
+    const newEmployee = {
+      id: Date.now(), // Simple ID generation using timestamp
+      name: employeeData.name,
+      email: `${employeeData.name.toLowerCase().replace(/\s+/g, '.')}@company.com`,
+      designation: employeeData.designation,
+      location: employeeData.location,
+      salary: employeeData.salary,
+      isCustom: true // Flag to identify custom employees
+    };
+    
+    const updatedEmployees = [...customEmployees, newEmployee];
+    setCustomEmployees(updatedEmployees);
+    
+    // Save to localStorage for persistence
+    localStorage.setItem('customEmployees', JSON.stringify(updatedEmployees));
+    
+    return newEmployee; // Return the created employee
+  };
+
+  // Function to delete an employee
+  const deleteEmployee = (employeeId) => {
+    const updatedEmployees = customEmployees.filter(emp => emp.id !== employeeId);
+    setCustomEmployees(updatedEmployees);
+    localStorage.setItem('customEmployees', JSON.stringify(updatedEmployees));
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -122,9 +161,18 @@ function App() {
           <Navbar />
           <main className="main-content">
             <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/employee-form" element={<EmployeeForm />} />
+              <Route 
+                path="/" 
+                element={<Dashboard customEmployees={customEmployees} deleteEmployee={deleteEmployee} />} 
+              />
+              <Route 
+                path="/dashboard" 
+                element={<Dashboard customEmployees={customEmployees} deleteEmployee={deleteEmployee} />} 
+              />
+              <Route 
+                path="/employee-form" 
+                element={<EmployeeForm addEmployee={addEmployee} />} 
+              />
             </Routes>
           </main>
         </div>
