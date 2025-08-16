@@ -10,107 +10,53 @@ import './App.css';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#2563eb',
-      light: '#3b82f6',
-      dark: '#1d4ed8',
+      main: '#000000',
     },
     secondary: {
-      main: '#7c3aed',
-      light: '#8b5cf6',
-      dark: '#6d28d9',
-    },
-    success: {
-      main: '#059669',
-      light: '#10b981',
-    },
-    warning: {
-      main: '#d97706',
-      light: '#f59e0b',
-    },
-    error: {
-      main: '#dc2626',
-      light: '#ef4444',
+      main: '#666666',
     },
     background: {
-      default: '#f8fafc',
+      default: '#ffffff',
       paper: '#ffffff',
     },
     text: {
-      primary: '#1e293b',
-      secondary: '#64748b',
+      primary: '#000000',
+      secondary: '#666666',
     },
   },
   typography: {
-    fontFamily: '"Inter", "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif',
-    h1: {
-      fontWeight: 800,
-      fontSize: '3.5rem',
-      lineHeight: 1.2,
-    },
-    h2: {
-      fontWeight: 700,
-      fontSize: '2.5rem',
-      lineHeight: 1.3,
-    },
-    h3: {
-      fontWeight: 700,
-      fontSize: '2rem',
-      lineHeight: 1.3,
-    },
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
     h4: {
       fontWeight: 600,
-      fontSize: '1.5rem',
-      lineHeight: 1.4,
-    },
-    h5: {
-      fontWeight: 600,
-      fontSize: '1.25rem',
-      lineHeight: 1.4,
+      color: '#000000',
     },
     h6: {
-      fontWeight: 600,
-      fontSize: '1.125rem',
-      lineHeight: 1.4,
-    },
-    body1: {
-      fontSize: '1rem',
-      lineHeight: 1.6,
-    },
-    body2: {
-      fontSize: '0.875rem',
-      lineHeight: 1.6,
+      fontWeight: 500,
+      color: '#000000',
     },
   },
-  shape: {
-    borderRadius: 16,
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          borderRadius: 0,
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: 'none',
+          },
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          boxShadow: 'none',
+          border: '1px solid #e0e0e0',
+        },
+      },
+    },
   },
-  shadows: [
-    'none',
-    '0px 1px 3px rgba(0, 0, 0, 0.05)',
-    '0px 4px 6px rgba(0, 0, 0, 0.05)',
-    '0px 10px 15px rgba(0, 0, 0, 0.1)',
-    '0px 20px 25px rgba(0, 0, 0, 0.1)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-    '0px 25px 50px rgba(0, 0, 0, 0.15)',
-  ],
 });
 
 function App() {
@@ -128,13 +74,12 @@ function App() {
   // Function to add new employee
   const addEmployee = (employeeData) => {
     const newEmployee = {
-      id: Date.now(), // Simple ID generation using timestamp
+      id: customEmployees.length + 11, // Start after API employees (1-10)
       name: employeeData.name,
       email: `${employeeData.name.toLowerCase().replace(/\s+/g, '.')}@company.com`,
       designation: employeeData.designation,
       location: employeeData.location,
-      salary: employeeData.salary,
-      isCustom: true // Flag to identify custom employees
+      salary: employeeData.salary
     };
     
     const updatedEmployees = [...customEmployees, newEmployee];
@@ -143,7 +88,7 @@ function App() {
     // Save to localStorage for persistence
     localStorage.setItem('customEmployees', JSON.stringify(updatedEmployees));
     
-    return newEmployee; // Return the created employee
+    return newEmployee;
   };
 
   // Function to delete an employee
