@@ -23,9 +23,12 @@ import {
   Save as SaveIcon,
   Refresh as RefreshIcon,
   BusinessCenter as BusinessIcon,
+  CheckCircle as CheckCircleIcon,
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
-const EmployeeForm = () => {
+const EmployeeForm = ({ addEmployee }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     designation: '',
@@ -85,10 +88,10 @@ const EmployeeForm = () => {
     e.preventDefault();
     
     if (validateForm()) {
-      // Simulate API call
-      console.log('Employee Data:', formData);
+      // Add employee using the prop function
+      addEmployee(formData);
       
-      setSnackbarMessage('Employee added successfully!');
+      setSnackbarMessage(`Employee "${formData.name}" added successfully! 🎉`);
       setSnackbarSeverity('success');
       setOpenSnackbar(true);
       
@@ -99,6 +102,12 @@ const EmployeeForm = () => {
         location: '',
         salary: ''
       });
+
+      // Navigate to dashboard after 2 seconds
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
+      
     } else {
       setSnackbarMessage('Please correct the errors in the form');
       setSnackbarSeverity('error');
@@ -342,11 +351,10 @@ const EmployeeForm = () => {
                           left: '100%',
                         }
                       }}
-                    >
-                      Save Employee
-                    </Button>
-                    
-                    <Button
+                      >
+                        <CheckCircleIcon sx={{ mr: 1 }} />
+                        Save Employee
+                      </Button>                    <Button
                       type="button"
                       variant="outlined"
                       size="large"

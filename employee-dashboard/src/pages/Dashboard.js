@@ -369,13 +369,137 @@ const Dashboard = ({ customEmployees = [], deleteEmployee }) => {
             </Card>
           </Zoom>
         </Grid>
-      ))}
-    </Grid>
-  );
-
-  const renderListView = () => (
+        ))}
+      </Grid>
+    </Box>
+  );  const renderListView = () => (
     <Box>
-      {employees.map((employee, index) => (
+      {/* Custom Employees Section */}
+      {customEmployees.length > 0 && (
+        <Box sx={{ mb: 5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+            <StarIcon sx={{ color: '#f59e0b', mr: 1, fontSize: '1.5rem' }} />
+            <Typography 
+              variant="h5" 
+              sx={{ 
+                color: 'white', 
+                fontWeight: 700,
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              Your Custom Employees ({customEmployees.length})
+            </Typography>
+          </Box>
+          {customEmployees.map((employee, index) => (
+            <Fade in={true} key={employee.id} style={{ transitionDelay: `${index * 50}ms` }}>
+              <Card
+                className="hover-lift professional-card"
+                sx={{
+                  mb: 3,
+                  borderRadius: 4,
+                  background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%)',
+                  backdropFilter: 'blur(20px)',
+                  border: '2px solid rgba(245, 158, 11, 0.3)',
+                  boxShadow: '0 4px 20px rgba(245, 158, 11, 0.2)',
+                  transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '4px',
+                    background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                    opacity: 1
+                  },
+                  '&:hover': {
+                    transform: 'translateX(12px) translateY(-4px)',
+                    boxShadow: '0 12px 40px rgba(245, 158, 11, 0.3)',
+                  }
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Avatar
+                        sx={{
+                          width: 56,
+                          height: 56,
+                          background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                          mr: 3,
+                          fontWeight: 700,
+                          fontSize: '1.3rem',
+                          border: '3px solid rgba(255, 255, 255, 0.9)',
+                          boxShadow: '0 8px 25px rgba(245, 158, 11, 0.4)'
+                        }}
+                      >
+                        {employee.name.charAt(0)}
+                      </Avatar>
+                      <Box>
+                        <Typography variant="h6" sx={{ fontWeight: 700, color: '#1e293b', fontSize: '1.2rem' }}>
+                          {employee.name}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: '#64748b', mt: 0.5, fontSize: '0.95rem' }}>
+                          {employee.email} • {employee.designation} • {employee.location}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: '#059669', mt: 0.5, fontSize: '0.95rem', fontWeight: 600 }}>
+                          ${parseInt(employee.salary).toLocaleString()}/year
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Chip
+                        label="Custom"
+                        sx={{
+                          background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                          color: 'white',
+                          fontWeight: 600,
+                          fontSize: '0.8rem'
+                        }}
+                      />
+                      <Tooltip title="Delete Employee">
+                        <IconButton
+                          onClick={() => deleteEmployee(employee.id)}
+                          sx={{
+                            color: '#dc2626',
+                            '&:hover': {
+                              backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                              transform: 'scale(1.1)'
+                            }
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Fade>
+          ))}
+          <Divider sx={{ my: 4, borderColor: 'rgba(255, 255, 255, 0.2)' }} />
+        </Box>
+      )}
+
+      {/* API Employees Section */}
+      <Box sx={{ mb: 3 }}>
+        <Typography 
+          variant="h5" 
+          sx={{ 
+            color: 'rgba(255, 255, 255, 0.9)', 
+            fontWeight: 600,
+            mb: 3
+          }}
+        >
+          Team Members from API ({apiEmployees.length})
+        </Typography>
+      </Box>
+      {apiEmployees.map((employee, index) => (
         <Fade in={true} key={employee.id} style={{ transitionDelay: `${index * 50}ms` }}>
           <Card
             className="hover-lift professional-card"
@@ -448,45 +572,194 @@ const Dashboard = ({ customEmployees = [], deleteEmployee }) => {
             </CardContent>
           </Card>
         </Fade>
-      ))}
+          ))}
     </Box>
-  );
-
-  const renderTableView = () => (
-    <TableContainer
-      component={Paper}
-      className="professional-table"
-      sx={{
-        borderRadius: 5,
-        background: 'rgba(255, 255, 255, 0.98)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(148, 163, 184, 0.2)',
-        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-        overflow: 'hidden'
-      }}
-    >
-      <Table>
-        <TableHead>
-          <TableRow
-            sx={{
-              background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
-              '& th': {
-                color: 'white',
+  );  const renderTableView = () => (
+    <Box>
+      {/* Custom Employees Table */}
+      {customEmployees.length > 0 && (
+        <Box sx={{ mb: 5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+            <StarIcon sx={{ color: '#f59e0b', mr: 1, fontSize: '1.5rem' }} />
+            <Typography 
+              variant="h5" 
+              sx={{ 
+                color: 'white', 
                 fontWeight: 700,
-                fontSize: '1rem',
-                letterSpacing: '0.025em',
-                py: 3
-              }
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              Your Custom Employees ({customEmployees.length})
+            </Typography>
+          </Box>
+          <TableContainer
+            component={Paper}
+            className="professional-table"
+            sx={{
+              borderRadius: 5,
+              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(217, 119, 6, 0.05) 100%)',
+              backdropFilter: 'blur(20px)',
+              border: '2px solid rgba(245, 158, 11, 0.3)',
+              boxShadow: '0 20px 40px rgba(245, 158, 11, 0.2)',
+              overflow: 'hidden',
+              mb: 4
             }}
           >
-            <TableCell>ID</TableCell>
-            <TableCell>Avatar</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Email</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {employees.map((employee, index) => (
+            <Table>
+              <TableHead>
+                <TableRow
+                  sx={{
+                    background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                    '& th': {
+                      color: 'white',
+                      fontWeight: 700,
+                      fontSize: '1rem',
+                      letterSpacing: '0.025em',
+                      py: 3
+                    }
+                  }}
+                >
+                  <TableCell>ID</TableCell>
+                  <TableCell>Avatar</TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Designation</TableCell>
+                  <TableCell>Location</TableCell>
+                  <TableCell>Salary</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {customEmployees.map((employee, index) => (
+                  <TableRow
+                    key={employee.id}
+                    sx={{
+                      '&:nth-of-type(odd)': {
+                        backgroundColor: 'rgba(245, 158, 11, 0.03)',
+                      },
+                      '&:hover': {
+                        backgroundColor: 'rgba(245, 158, 11, 0.08)',
+                        transform: 'scale(1.005)',
+                      },
+                      transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                    }}
+                  >
+                    <TableCell>
+                      <Chip
+                        label={employee.id}
+                        size="small"
+                        sx={{
+                          background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                          color: 'white',
+                          fontWeight: 600,
+                          fontSize: '0.8rem'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Avatar
+                        sx={{
+                          width: 44,
+                          height: 44,
+                          background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                          fontWeight: 700,
+                          fontSize: '1.1rem',
+                          border: '2px solid rgba(255, 255, 255, 0.9)'
+                        }}
+                      >
+                        {employee.name.charAt(0)}
+                      </Avatar>
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 600, color: '#1e293b', fontSize: '1rem' }}>
+                      {employee.name}
+                    </TableCell>
+                    <TableCell sx={{ color: '#64748b', fontSize: '0.95rem' }}>
+                      {employee.email}
+                    </TableCell>
+                    <TableCell sx={{ color: '#64748b', fontSize: '0.95rem' }}>
+                      {employee.designation}
+                    </TableCell>
+                    <TableCell sx={{ color: '#64748b', fontSize: '0.95rem' }}>
+                      {employee.location}
+                    </TableCell>
+                    <TableCell sx={{ color: '#059669', fontSize: '0.95rem', fontWeight: 600 }}>
+                      ${parseInt(employee.salary).toLocaleString()}
+                    </TableCell>
+                    <TableCell>
+                      <Tooltip title="Delete Employee">
+                        <IconButton
+                          onClick={() => deleteEmployee(employee.id)}
+                          sx={{
+                            color: '#dc2626',
+                            '&:hover': {
+                              backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                              transform: 'scale(1.1)'
+                            }
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Divider sx={{ my: 4, borderColor: 'rgba(255, 255, 255, 0.2)' }} />
+        </Box>
+      )}
+
+      {/* API Employees Table */}
+      <Box sx={{ mb: 3 }}>
+        <Typography 
+          variant="h5" 
+          sx={{ 
+            color: 'rgba(255, 255, 255, 0.9)', 
+            fontWeight: 600,
+            mb: 3
+          }}
+        >
+          Team Members from API ({apiEmployees.length})
+        </Typography>
+      </Box>
+      <TableContainer
+        component={Paper}
+        className="professional-table"
+        sx={{
+          borderRadius: 5,
+          background: 'rgba(255, 255, 255, 0.98)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(148, 163, 184, 0.2)',
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+          overflow: 'hidden'
+        }}
+      >
+        <Table>
+          <TableHead>
+            <TableRow
+              sx={{
+                background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
+                '& th': {
+                  color: 'white',
+                  fontWeight: 700,
+                  fontSize: '1rem',
+                  letterSpacing: '0.025em',
+                  py: 3
+                }
+              }}
+            >
+              <TableCell>ID</TableCell>
+              <TableCell>Avatar</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {apiEmployees.map((employee, index) => (
             <TableRow
               key={employee.id}
               sx={{
@@ -533,10 +806,11 @@ const Dashboard = ({ customEmployees = [], deleteEmployee }) => {
                 {employee.email}
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 
   if (loading) {
@@ -596,7 +870,7 @@ const Dashboard = ({ customEmployees = [], deleteEmployee }) => {
                 letterSpacing: '-0.025em'
               }}
             >
-              Employee Dashboard
+              Employee Dashboard ({allEmployees.length} Total)
             </Typography>
             <Typography 
               variant="h6" 
